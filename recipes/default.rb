@@ -17,9 +17,12 @@
 # limitations under the License.
 #
 
-gems = %w{ pg rails }
-gems.each do |gem|
-  gem_package gem
+gem_package "postgres-pr"
+gem_package "rails" do
+  version "2.3.11"
+end
+gem_package "i18n" do
+  version "0.4.2"
 end
 
 passenger_nginx_vhost "redmine"
@@ -30,4 +33,44 @@ end
 
 postgresql_db "redmine_production" do
   owner "redmine"
+end
+
+directories = [ "/srv/rails/redmine/shared/config", "/srv/rails/redmine/shared/log" ]
+directories.each do |dir|
+  directory dir do
+    owner "nginx"
+    group "nginx"
+    mode "0755"
+    recursive true
+  end
+end
+
+cookbook_file "/srv/rails/redmine/shared/config/database.yml" do
+  source "database.yml"
+  owner "nginx"
+  group "nginx"
+  mode "0400"
+end
+
+deploy_revision "/srv/rails/redmine" do
+  repo "git://github.com/edavis10/redmine.git"
+  revision "1.2.0" # or "HEAD" or "TAG_for_1.0" or (subversion) "1234"
+  user "nginx"
+  enable_submodules true
+  before_migrate do
+    execute "rake generate_session_store" do
+      cwd release_path
+    end
+  end
+  migrate true
+  migration_command "rake db:migrate"
+  before_symlink do
+    execute "rake redmine:load_default_data" do
+      cwd release_path
+      environment "RAILS_ENV" => "production", "REDMINE_LANG" => en
+    end
+  end
+  environment "RAILS_ENV" => "production", "REDMINE_LANG" => en
+  action :deploy # or :rollback
+  restart_command "touch tmp/restart.txt"
 end
