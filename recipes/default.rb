@@ -17,28 +17,17 @@
 # limitations under the License.
 #
 
-#system "gem update --system 1.4.2"
-
 gems = %w{ pg rails }
-
 gems.each do |gem|
   gem_package gem
 end
 
 passenger_nginx_vhost "redmine"
 
-execute "create-user" do
-  user "postgres"
-  command "echo \"CREATE USER redmine WITH PASSWORD 'redmine';\" | psql"
+postgresql_user "redmine" do
+  password "redmine"
 end
 
-execute "create-db" do
-  user "postgres"
-  command "echo \"CREATE DATABASE redmine_production OWNER redmine ENCODING 'utf8';\" | psql"
+postgresql_db "redmine_production" do
+  owner "redmine"
 end
-
-
-#rvm_wrapper "update rvm wrappers" do
-#  ruby_string "ree-1.8.7-2011.03"
-#  action :create
-#end
