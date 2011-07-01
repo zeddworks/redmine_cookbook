@@ -25,7 +25,7 @@ gem_package "i18n" do
   version "0.4.2"
 end
 
-passenger_nginx_vhost "redmine"
+passenger_nginx_vhost "redmine.zeddworks.com"
 
 postgresql_user "redmine" do
   password "redmine"
