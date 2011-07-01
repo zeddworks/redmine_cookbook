@@ -38,7 +38,10 @@ postgresql_db "redmine_production" do
   owner "redmine"
 end
 
-directories = [ "#{redmine_path}/shared/config", "#{redmine_path}shared/log" ]
+directories = [
+                "#{redmine_path}/shared/config","#{redmine_path}/shared/log",
+                "#{redmine_path}/shared/system","#{redmine_path}/shared/pids"
+              ]
 directories.each do |dir|
   directory dir do
     owner "nginx"
