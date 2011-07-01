@@ -67,10 +67,10 @@ deploy_revision "/srv/rails/redmine" do
   before_symlink do
     execute "rake redmine:load_default_data" do
       cwd release_path
-      environment "RAILS_ENV" => "production", "REDMINE_LANG" => en
+      environment "RAILS_ENV" => "production", "REDMINE_LANG" => "en"
     end
   end
-  environment "RAILS_ENV" => "production", "REDMINE_LANG" => en
+  environment "RAILS_ENV" => "production"
   action :deploy # or :rollback
   restart_command "touch tmp/restart.txt"
 end
