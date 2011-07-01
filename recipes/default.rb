@@ -74,3 +74,21 @@ deploy_revision "/srv/rails/redmine" do
   action :deploy # or :rollback
   restart_command "touch tmp/restart.txt"
 end
+
+gem_package "aasm"
+
+redmine_kanban_path = "/srv/rails/redmine/current/vendor/plugins"
+
+git "#{redmine_kanban_path}/redmine_kanban" do
+  repository "git://github.com/edavis10/redmine_kanban.git"
+  reference "v0.2.0"
+  user 'nginx'
+  group 'nginx'
+  action :checkout
+end
+
+execute "migrate_plugins" do
+  command "rake db:migrate_plugins"
+  cwd redmine_kanban_path
+  environment 'RAILS_ENV' => "production"
+end
