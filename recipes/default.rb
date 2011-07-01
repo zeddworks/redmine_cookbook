@@ -17,6 +17,9 @@
 # limitations under the License.
 #
 
+redmine_url = "redmine.zeddworks.com"
+redmine_path = "/srv/rails/#{redmine_url}"
+
 gem_package "postgres-pr"
 gem_package "rails" do
   version "2.3.11"
@@ -25,7 +28,7 @@ gem_package "i18n" do
   version "0.4.2"
 end
 
-passenger_nginx_vhost "redmine.zeddworks.com"
+passenger_nginx_vhost redmine_url
 
 postgresql_user "redmine" do
   password "redmine"
@@ -35,7 +38,7 @@ postgresql_db "redmine_production" do
   owner "redmine"
 end
 
-directories = [ "/srv/rails/redmine/shared/config", "/srv/rails/redmine/shared/log" ]
+directories = [ "#{redmine_path}/shared/config", "#{redmine_path}shared/log" ]
 directories.each do |dir|
   directory dir do
     owner "nginx"
@@ -45,14 +48,14 @@ directories.each do |dir|
   end
 end
 
-cookbook_file "/srv/rails/redmine/shared/config/database.yml" do
+cookbook_file "#{redmine_path}/shared/config/database.yml" do
   source "database.yml"
   owner "nginx"
   group "nginx"
   mode "0400"
 end
 
-deploy_revision "/srv/rails/redmine" do
+deploy_revision "#{redmine_path}" do
   repo "git://github.com/edavis10/redmine.git"
   revision "1.2.0" # or "HEAD" or "TAG_for_1.0" or (subversion) "1234"
   user "nginx"
@@ -77,7 +80,7 @@ end
 
 gem_package "aasm"
 
-redmine_kanban_path = "/srv/rails/redmine/current/vendor/plugins"
+redmine_kanban_path = "#{redmine_path}/current/vendor/plugins"
 
 git "#{redmine_kanban_path}/redmine_kanban" do
   repository "git://github.com/edavis10/redmine_kanban.git"
