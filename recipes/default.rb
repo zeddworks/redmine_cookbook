@@ -40,7 +40,8 @@ end
 
 directories = [
                 "#{redmine_path}/shared/config","#{redmine_path}/shared/log",
-                "#{redmine_path}/shared/system","#{redmine_path}/shared/pids"
+                "#{redmine_path}/shared/system","#{redmine_path}/shared/pids",
+                /var/redmine/files
               ]
 directories.each do |dir|
   directory dir do
@@ -53,6 +54,13 @@ end
 
 cookbook_file "#{redmine_path}/shared/config/database.yml" do
   source "database.yml"
+  owner "nginx"
+  group "nginx"
+  mode "0400"
+end
+
+cookbook_file "#{redmine_path}/shared/config/configuration.yml" do
+  source "configuration.yml"
   owner "nginx"
   group "nginx"
   mode "0400"
