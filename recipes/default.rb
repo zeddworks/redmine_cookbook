@@ -21,6 +21,7 @@ redmine_url = "redmine.zeddworks.com"
 redmine_path = "/srv/rails/#{redmine_url}"
 
 gem_package "postgres-pr"
+gem_package "taps"
 gem_package "rails" do
   version "2.3.11"
 end
@@ -41,7 +42,7 @@ end
 directories = [
                 "#{redmine_path}/shared/config","#{redmine_path}/shared/log",
                 "#{redmine_path}/shared/system","#{redmine_path}/shared/pids",
-                /var/redmine/files
+                "/var/redmine/files"
               ]
 directories.each do |dir|
   directory dir do
