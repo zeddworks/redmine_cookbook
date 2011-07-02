@@ -74,17 +74,21 @@ deploy_revision "#{redmine_path}" do
   enable_submodules true
   before_migrate do
     execute "rake generate_session_store" do
+      user 'nginx'
+      group 'nginx'
       cwd release_path
     end
   end
   migrate true
   migration_command "rake db:migrate"
-  symlink_before_migrate {
+  symlink_before_migrate ({
                           "config/database.yml" => "config/database.yml",
                           "config/configuration.yml" => "config/configuration.yml"
-                         }
+                         })
   before_symlink do
     execute "rake redmine:load_default_data" do
+      user 'nginx'
+      group 'nginx'
       cwd release_path
       environment "RAILS_ENV" => "production", "REDMINE_LANG" => "en"
     end
@@ -107,6 +111,8 @@ git "#{redmine_kanban_path}/redmine_kanban" do
 end
 
 execute "migrate_plugins" do
+  user 'nginx'
+  group 'nginx'
   command "rake db:migrate_plugins"
   cwd redmine_kanban_path
   environment 'RAILS_ENV' => "production"

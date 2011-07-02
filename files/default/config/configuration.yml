@@ -83,7 +83,8 @@ default:
   email_delivery:
     delivery_method: :smtp
     smtp_settings:
-      address: 192.168.1.92
+      address: 192.168.1.96
+      domain: zeddworks.com
       port: 25
 
   # Absolute path to the directory where attachments are stored.
