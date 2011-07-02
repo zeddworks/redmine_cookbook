@@ -53,18 +53,24 @@ directories.each do |dir|
   end
 end
 
-cookbook_file "#{redmine_path}/shared/config/database.yml" do
-  source "config/database.yml"
+template "#{redmine_path}/shared/config/database.yml" do
+  source "database.yml.erb"
   owner "nginx"
   group "nginx"
   mode "0400"
 end
 
-cookbook_file "#{redmine_path}/shared/config/configuration.yml" do
-  source "config/configuration.yml"
+template "#{redmine_path}/shared/config/configuration.yml" do
+  source "configuration.yml.erb"
   owner "nginx"
   group "nginx"
   mode "0400"
+  variables({
+    :smtp_host => "192.168.1.96",
+    :domain => "arya.zeddworks.com",
+    :port => 25,
+    :attachments_path => "/var/redmine/files"
+  })
 end
 
 deploy_revision "#{redmine_path}" do
