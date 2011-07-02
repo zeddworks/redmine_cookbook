@@ -54,14 +54,14 @@ directories.each do |dir|
 end
 
 cookbook_file "#{redmine_path}/shared/config/database.yml" do
-  source "database.yml"
+  source "config/database.yml"
   owner "nginx"
   group "nginx"
   mode "0400"
 end
 
 cookbook_file "#{redmine_path}/shared/config/configuration.yml" do
-  source "configuration.yml"
+  source "config/configuration.yml"
   owner "nginx"
   group "nginx"
   mode "0400"
@@ -79,6 +79,10 @@ deploy_revision "#{redmine_path}" do
   end
   migrate true
   migration_command "rake db:migrate"
+  symlink_before_migrate {
+                          "config/database.yml" => "config/database.yml",
+                          "config/configuration.yml" => "config/configuration.yml"
+                         }
   before_symlink do
     execute "rake redmine:load_default_data" do
       cwd release_path
