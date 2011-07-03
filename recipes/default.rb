@@ -62,11 +62,11 @@ template "#{redmine_path}/shared/config/database.yml" do
   group "nginx"
   mode "0400"
   variables({
-    :db_adapter => redmine["db_adpater"],
+    :db_adapter => redmine["db_adapter"],
     :db_name => redmine["db_name"],
     :db_host => redmine["db_host"],
     :db_user => redmine["db_user"],
-    :db_password => redmine["db_password]"
+    :db_password => redmine["db_password"]
   })
 end
 
@@ -79,7 +79,7 @@ template "#{redmine_path}/shared/config/configuration.yml" do
     :smtp_host => smtp["smtp_host"],
     :domain => smtp["domain"],
     :port => smtp["port"],
-    :attachments_path => smtp["attachments_path"]
+    :attachments_path => redmine["attachments_path"]
   })
 end
 
