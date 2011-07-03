@@ -58,6 +58,13 @@ template "#{redmine_path}/shared/config/database.yml" do
   owner "nginx"
   group "nginx"
   mode "0400"
+  variables({
+    :db_adapter => "postgresql",
+    :db_name => "redmine_production",
+    :db_host => "localhost",
+    :db_user => "redmine",
+    :db_password => "redmine"
+  })
 end
 
 template "#{redmine_path}/shared/config/configuration.yml" do
