@@ -49,7 +49,7 @@ end
 directories = [
                 "#{redmine_path}/shared/config","#{redmine_path}/shared/log",
                 "#{redmine_path}/shared/system","#{redmine_path}/shared/pids",
-                "/var/redmine/files"
+                "#{redmine_path}/shared/config/environments","/var/redmine/files"
               ]
 directories.each do |dir|
   directory dir do
