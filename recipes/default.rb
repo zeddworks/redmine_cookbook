@@ -31,6 +31,8 @@ end
 gem_package "i18n" do
   version "0.4.2"
 end
+package "libmagickwand-dev"
+gem_package "rmagick"
 
 passenger_nginx_vhost redmine_url
 
