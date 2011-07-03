@@ -23,6 +23,8 @@ smtp = Chef::EncryptedDataBagItem.load("apps", "smtp")
 redmine_url = redmine["redmine_url"]
 redmine_path = "/srv/rails/#{redmine_url}"
 
+package "memcached"
+
 gem_package "postgres-pr"
 gem_package "taps"
 gem_package "rails" do
@@ -56,6 +58,13 @@ directories.each do |dir|
     mode "0755"
     recursive true
   end
+end
+
+cookbook_file "#{redmine_path}/shared/config/environments/production.rb" do
+  source "production.rb"
+  owner "nginx"
+  group "nginx"
+  mode "0400"
 end
 
 template "#{redmine_path}/shared/config/database.yml" do
@@ -101,7 +110,8 @@ deploy_revision "#{redmine_path}" do
   migration_command "rake db:migrate"
   symlink_before_migrate ({
                           "config/database.yml" => "config/database.yml",
-                          "config/configuration.yml" => "config/configuration.yml"
+                          "config/configuration.yml" => "config/configuration.yml",
+                          "config/environments/production.rb" => "config/environments/production.rb"
                          })
   before_symlink do
     execute "rake redmine:load_default_data" do
