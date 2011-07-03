@@ -17,7 +17,10 @@
 # limitations under the License.
 #
 
-redmine_url = "redmine.zeddworks.com"
+redmine = Chef::EncryptedDataBagItem.load("apps", "redmine")
+smtp = Chef::EncryptedDataBagItem.load("apps", "smtp")
+
+redmine_url = redmine["redmine_url"]
 redmine_path = "/srv/rails/#{redmine_url}"
 
 gem_package "postgres-pr"
@@ -59,11 +62,11 @@ template "#{redmine_path}/shared/config/database.yml" do
   group "nginx"
   mode "0400"
   variables({
-    :db_adapter => "postgresql",
-    :db_name => "redmine_production",
-    :db_host => "localhost",
-    :db_user => "redmine",
-    :db_password => "redmine"
+    :db_adapter => redmine["db_adpater"],
+    :db_name => redmine["db_name"],
+    :db_host => redmine["db_host"],
+    :db_user => redmine["db_user"],
+    :db_password => redmine["db_password]"
   })
 end
 
@@ -73,10 +76,10 @@ template "#{redmine_path}/shared/config/configuration.yml" do
   group "nginx"
   mode "0400"
   variables({
-    :smtp_host => "192.168.1.96",
-    :domain => "arya.zeddworks.com",
-    :port => 25,
-    :attachments_path => "/var/redmine/files"
+    :smtp_host => smtp["smtp_host"],
+    :domain => smtp["domain"],
+    :port => smtp["port"],
+    :attachments_path => smtp["attachments_path"]
   })
 end
 
