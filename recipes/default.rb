@@ -20,8 +20,8 @@
 redmine = Chef::EncryptedDataBagItem.load("apps", "redmine")
 smtp = Chef::EncryptedDataBagItem.load("apps", "smtp")
 
-redmine_url = redmine["redmine_url"]
-redmine_path = "/srv/rails/#{redmine_url}"
+url = redmine["url"]
+path = "/srv/rails/#{url}"
 
 package "memcached"
 
@@ -36,7 +36,7 @@ end
 package "libmagickwand-dev"
 gem_package "rmagick"
 
-passenger_nginx_vhost redmine_url
+passenger_nginx_vhost url
 
 postgresql_user "redmine" do
   password "redmine"
@@ -47,9 +47,9 @@ postgresql_db "redmine_production" do
 end
 
 directories = [
-                "#{redmine_path}/shared/config","#{redmine_path}/shared/log",
-                "#{redmine_path}/shared/system","#{redmine_path}/shared/pids",
-                "#{redmine_path}/shared/config/environments","/var/redmine/files"
+                "#{path}/shared/config","#{path}/shared/log",
+                "#{path}/shared/system","#{path}/shared/pids",
+                "#{path}/shared/config/environments","/var/redmine/files"
               ]
 directories.each do |dir|
   directory dir do
@@ -60,14 +60,14 @@ directories.each do |dir|
   end
 end
 
-cookbook_file "#{redmine_path}/shared/config/environments/production.rb" do
+cookbook_file "#{path}/shared/config/environments/production.rb" do
   source "production.rb"
   owner "nginx"
   group "nginx"
   mode "0400"
 end
 
-template "#{redmine_path}/shared/config/database.yml" do
+template "#{path}/shared/config/database.yml" do
   source "database.yml.erb"
   owner "nginx"
   group "nginx"
@@ -81,7 +81,7 @@ template "#{redmine_path}/shared/config/database.yml" do
   })
 end
 
-template "#{redmine_path}/shared/config/configuration.yml" do
+template "#{path}/shared/config/configuration.yml" do
   source "configuration.yml.erb"
   owner "nginx"
   group "nginx"
@@ -94,7 +94,7 @@ template "#{redmine_path}/shared/config/configuration.yml" do
   })
 end
 
-deploy_revision "#{redmine_path}" do
+deploy_revision "#{path}" do
   repo "git://github.com/edavis10/redmine.git"
   revision "1.2.0" # or "HEAD" or "TAG_for_1.0" or (subversion) "1234"
   user "nginx"
